@@ -37,6 +37,7 @@ sealed class WorldStateGameSync : IDisposable
     private readonly Actor?[] _actorsByIndex = new Actor?[ObjectTableSize];
 
     private bool _needInventoryUpdate = true;
+    private DateTime _nextInventoryPoll;
 
     private readonly Network.OpcodeMap _opcodeMap = new();
     private readonly Network.PacketInterceptor _interceptor = new();
@@ -82,9 +83,6 @@ sealed class WorldStateGameSync : IDisposable
 
     private unsafe delegate void* ProcessPacketFateInfoDelegate(ulong fateId, long startTimestamp, ulong durationSecs);
     private readonly Hook<ProcessPacketFateInfoDelegate> _processPacketFateInfoHook;
-
-    private unsafe delegate void InventoryAckDelegate(uint a1, void* a2);
-    private readonly Hook<InventoryAckDelegate> _inventoryAckHook;
 
     public unsafe WorldStateGameSync(WorldState ws, ActionManagerEx amex)
     {
@@ -166,17 +164,10 @@ sealed class WorldStateGameSync : IDisposable
         _processLegacyMapEffectHook.Enable();
         Service.Log($"[WSG] LegacyMapEffect address = {_processLegacyMapEffectHook.Address:X}");
 
-        // Traditional Chinese 7.3 client: the retail signature used by this API13
-        // snapshot no longer matches. This signature is used by the working API13
-        // compatibility build published by NiGuangOwO.
-        _inventoryAckHook = Service.Hook.HookFromSignature<InventoryAckDelegate>("4C ?? ?? 8B ?? 48 ?? ?? ?? ?? ?? ?? E9", InventoryAckDetour);
-        _inventoryAckHook.Enable();
-        Service.Log($"[WSG] InventoryAck address = {_inventoryAckHook.Address:X}");
     }
 
     public void Dispose()
     {
-        _inventoryAckHook.Dispose();
         _processMapEffect1Hook.Dispose();
         _processMapEffect2Hook.Dispose();
         _processMapEffect3Hook.Dispose();
@@ -811,6 +802,12 @@ sealed class WorldStateGameSync : IDisposable
                 _ws.Execute(new ClientState.OpInventoryChange(itemId, count));
         }
 
+        if (DateTime.UtcNow >= _nextInventoryPoll)
+        {
+            _needInventoryUpdate = true;
+            _nextInventoryPoll = DateTime.UtcNow.AddSeconds(1);
+        }
+
         if (_needInventoryUpdate)
         {
             var im = InventoryManager.Instance();
@@ -1125,9 +1122,4 @@ sealed class WorldStateGameSync : IDisposable
         return res;
     }
 
-    private unsafe void InventoryAckDetour(uint a1, void* a2)
-    {
-        _inventoryAckHook.Original(a1, a2);
-        _needInventoryUpdate = true;
-    }
 }
