@@ -3,7 +3,7 @@
   "Name": "BossMod Reborn",
   "InternalName": "BossModReborn",
   "RepoUrl": "https://github.com/FFXIV-CombatReborn/BossmodReborn",
-  "Description": "A bunch of utilities to simplify boss mechanics",
+  "Description": "協助處理首領戰機制的多功能工具，提供雷達、自動循環、冷卻規劃與 AI 功能。",
   "ApplicableVersion": "any",
   "Tags": [
     "combat",
@@ -21,7 +21,7 @@
   "LoadPriority": 0,
   "IsTestingExclusive": false,
   "IconUrl": "https://raw.githubusercontent.com/FFXIV-CombatReborn/RebornAssets/main/IconAssets/BMR_Icon.png",
-  "Punchline": "Don't fail at raid mechanics anymore",
+  "Punchline": "首領機制、戰鬥雷達與自動循環輔助",
   "AcceptsFeedback": true,
   "ImageUrls": [
     "https://raw.githubusercontent.com/FFXIV-CombatReborn/BossmodReborn/master/Data/image1.png",

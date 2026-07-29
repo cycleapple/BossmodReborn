@@ -3,7 +3,7 @@ using Dalamud.Interface.Utility.Raii;
 
 namespace BossMod;
 
-[ConfigDisplay(Name = "Party roles assignment", Order = 2)]
+[ConfigDisplay(Name = "小隊職責分配", Order = 2)]
 public class PartyRolesConfig : ConfigNode
 {
     public enum Assignment { MT, OT, H1, H2, M1, M2, R1, R2, Unassigned }
@@ -71,7 +71,7 @@ public class PartyRolesConfig : ConfigNode
             {
                 foreach (var r in typeof(Assignment).GetEnumValues())
                     ImGui.TableSetupColumn(r.ToString(), ImGuiTableColumnFlags.None, 25);
-                ImGui.TableSetupColumn("Name");
+                ImGui.TableSetupColumn("名稱");
                 ImGui.TableHeadersRow();
 
                 List<(ulong cid, string name, char role, Assignment assignment)> party = [];
@@ -107,12 +107,12 @@ public class PartyRolesConfig : ConfigNode
         if (AssignmentsPerSlot(ws.Party).Length == 0)
         {
             using var color = ImRaii.PushColor(ImGuiCol.Text, Colors.TextColor2);
-            ImGui.TextUnformatted("Invalid assignments: there should be exactly one raid member per role");
+            ImGui.TextUnformatted("分配無效：每個團隊職責都必須恰好分配一名成員");
         }
         else
         {
             using var color = ImRaii.PushColor(ImGuiCol.Text, Colors.TextColor4);
-            ImGui.TextUnformatted("All good!");
+            ImGui.TextUnformatted("分配正確！");
         }
     }
 }

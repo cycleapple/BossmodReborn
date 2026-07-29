@@ -74,7 +74,7 @@ public sealed class Plugin : IDalamudPlugin
         Service.Config.Modified.Subscribe(() => Task.Run(() => Service.Config.SaveToFile(dalamud.ConfigFile)));
 
         CommandManager = commandManager;
-        CommandManager.AddHandler("/bmr", new CommandInfo(OnCommand) { HelpMessage = "Show boss mod settings UI" });
+        CommandManager.AddHandler("/bmr", new CommandInfo(OnCommand) { HelpMessage = "顯示 BossMod 設定介面" });
 
         ActionDefinitions.Instance.UnlockCheck = QuestUnlocked; // ensure action definitions are initialized and set unlock check functor (we don't really store the quest progress in clientstate, for now at least)
 
@@ -103,7 +103,7 @@ public sealed class Plugin : IDalamudPlugin
         _wndReplay = new ReplayManagementWindow(_ws, _bossmod, _rotationDB, new DirectoryInfo(replayDir));
         _configUI = new(Service.Config, _ws, new DirectoryInfo(replayDir), _rotationDB);
         config.Modified.ExecuteAndSubscribe(() => _wndReplay.UpdateLogDirectory());
-        _wndRotation = new(_rotation, _amex, () => OpenConfigUI("Autorotation presets"));
+        _wndRotation = new(_rotation, _amex, () => OpenConfigUI("自動循環預設"));
         _wndDebug = new(_ws, _rotation, _zonemod, _amex, _movementOverride, _hintsBuilder, dalamud);
 
         dalamud.UiBuilder.DisableAutomaticUiHide = true;

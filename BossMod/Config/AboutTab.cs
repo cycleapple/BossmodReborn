@@ -18,48 +18,48 @@ public sealed class AboutTab(DirectoryInfo? replayDir)
     {
         using var wrap = ImRaii.TextWrapPos(0);
 
-        ImGui.TextUnformatted("BossModReborn (BMR) provides boss fight radar, auto-rotation, cooldown planning, and AI. All of its modules can be toggled individually. Support for it can be found in the Discord server linked at the bottom of this tab.");
-        ImGui.TextUnformatted("This is a FORK of the original BossMod (VBM). Only ask for support on the Combat Reborn Discord.");
-        ImGui.TextUnformatted("Please also make sure to not load VBM and this fork at the same time. The consequences of doing that are unexplored and unsupported.");
+        ImGui.TextUnformatted("BossModReborn（BMR）提供首領戰雷達、自動循環、冷卻規劃與 AI 功能。所有模組都能個別啟用或停用。如需支援，請前往本頁籤底部連結的 Discord 伺服器。");
+        ImGui.TextUnformatted("這是原版 BossMod（VBM）的分支版本。請只在 Combat Reborn Discord 尋求支援。");
+        ImGui.TextUnformatted("請勿同時載入 VBM 與此分支；同時使用的結果尚未經過測試，也不在支援範圍內。");
         ImGui.Spacing();
-        DrawSection("Radar",
+        DrawSection("雷達",
         [
-            "Provides an on-screen window that contains an area mini-map showing player positions, boss position(s), various imminent AOEs, and other mechanics.",
-            "Useful because you don't have to remember what ability names mean.",
-            "See exactly whether you're getting clipped by incoming AOEs or not.",
-            "Enabled for supported bosses, visible in the \"Supported bosses\" tab.",
+            "在畫面上顯示區域小地圖，標示玩家與首領位置、即將出現的範圍攻擊（AOE）及其他機制。",
+            "不必記住每個技能名稱也能理解機制。",
+            "可精確確認自己是否會被即將到來的 AOE 擊中。",
+            "可在「支援的首領」頁籤查看並啟用支援的首領。",
         ]);
         ImGui.Spacing();
-        DrawSection("Autorotation",
+        DrawSection("自動循環",
         [
-            "Executes fully optimal rotations to the best of its ability.",
-            "Go to the \"Autorotation presets\" tab to create a preset.",
-            "Maturity of each rotation module is present in a tooltip.",
-            "Guide for using this feature can be found on the wiki.",
+            "盡可能執行最佳化的技能循環。",
+            "前往「自動循環預設」頁籤建立預設。",
+            "各循環模組的完成度會顯示於工具提示中。",
+            "此功能的使用指南可在 Wiki 查看。",
         ]);
         ImGui.Spacing();
-        DrawSection("Cooldown planner",
+        DrawSection("冷卻規劃器",
         [
-            "Creates a CD plan for supported bosses.",
-            "Replaces autorotations in specific fights.",
-            "Allows you to time specific abilities to cast at specific times.",
-            "Guide for using this feature can be found on the wiki.",
+            "為支援的首領建立冷卻技能計畫。",
+            "可在特定戰鬥中取代自動循環。",
+            "讓指定技能在預定時間施放。",
+            "此功能的使用指南可在 Wiki 查看。",
         ]);
         ImGui.Spacing();
         DrawSection("AI",
         [
-            "Automates movement during boss fights.",
-            "Automatically moves your character based on safe zones determined by a boss's module, visible on the radar.",
-            "Should not be used in when playing with unknown players.",
-            "Can be hooked by other plugins to automate entire duties.",
+            "在首領戰中自動移動。",
+            "依照首領模組判定並顯示於雷達的安全區域，自動移動角色。",
+            "與不熟悉的玩家組隊時不建議使用。",
+            "其他插件可透過介接功能自動執行完整任務。",
         ]);
         ImGui.Spacing();
-        DrawSection("Replays",
+        DrawSection("重播",
         [
-            "Useful for creating boss modules, analyzing problems with them, and making CD plans.",
-            "When asking for help, make sure to provide a replay! Please note that replays will contain your player name!",
-            "Enabled in Settings > Show replay management UI (or enable auto recording).",
-            $"Files are located in '{replayDir}'.",
+            "可用於建立首領模組、分析模組問題及製作冷卻技能計畫。",
+            "尋求協助時請提供重播。請注意，重播會包含你的角色名稱！",
+            "請在「設定 > 顯示重播管理介面」啟用（或啟用自動錄製）。",
+            $"檔案位於「{replayDir}」。",
         ]);
         ImGui.Spacing();
         ImGui.Spacing();
@@ -74,7 +74,7 @@ public sealed class AboutTab(DirectoryInfo? replayDir)
         if (ImGui.Button("BossMod Wiki", new(130, 0)))
             _lastErrorMessage = OpenLink("https://github.com/awgil/ffxiv_bossmod/wiki");
         ImGui.SameLine();
-        if (ImGui.Button("Open replay folder", new(180, 0)) && replayDir != null)
+        if (ImGui.Button("開啟重播資料夾", new(180, 0)) && replayDir != null)
             _lastErrorMessage = OpenDirectory(replayDir);
 
         if (_lastErrorMessage.Length > 0)
@@ -118,14 +118,14 @@ public sealed class AboutTab(DirectoryInfo? replayDir)
         catch (Exception e)
         {
             Service.Log($"Error opening link {link}: {e}");
-            return $"Failed to open link '{link}', open it manually in the browser.";
+            return $"無法開啟連結「{link}」，請手動使用瀏覽器開啟。";
         }
     }
 
     private static string OpenDirectory(DirectoryInfo dir)
     {
         if (!dir.Exists)
-            return $"Directory '{dir}' not found.";
+            return $"找不到資料夾「{dir}」。";
 
         try
         {
@@ -135,7 +135,7 @@ public sealed class AboutTab(DirectoryInfo? replayDir)
         catch (Exception e)
         {
             Service.Log($"Error opening directory {dir}: {e}");
-            return $"Failed to open folder '{dir}', open it manually.";
+            return $"無法開啟資料夾「{dir}」，請手動開啟。";
         }
     }
 }

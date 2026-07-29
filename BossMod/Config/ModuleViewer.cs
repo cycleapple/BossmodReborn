@@ -167,14 +167,14 @@ public sealed class ModuleViewer : IDisposable
         ImGui.TableNextColumn();
         ImGui.TableNextColumn(); //spacing with only one seemed to be a bit small on certain window sizes
         ImGui.AlignTextToFramePadding();
-        ImGui.Text("Search:");
+        ImGui.Text("搜尋：");
         ImGui.SameLine();
         ImGui.SetNextItemWidth(-1);
         DrawSearchBar();
         ImGui.TableNextColumn();
 
         ImGui.TableNextColumn();
-        ImGui.TableHeader("Expansion");
+        ImGui.TableHeader("資料片");
         ImGui.TableNextRow(ImGuiTableRowFlags.None);
         ImGui.TableNextColumn();
         DrawExpansionFilters();
@@ -182,7 +182,7 @@ public sealed class ModuleViewer : IDisposable
         ImGui.TableNextRow();
 
         ImGui.TableNextColumn();
-        ImGui.TableHeader("Content");
+        ImGui.TableHeader("內容");
         ImGui.TableNextRow(ImGuiTableRowFlags.None);
         ImGui.TableNextColumn();
         DrawContentTypeFilters();
@@ -190,12 +190,12 @@ public sealed class ModuleViewer : IDisposable
 
     private void DrawSearchBar()
     {
-        ImGui.InputTextWithHint("##search", "e.g. \"Ultimate\"", ref _searchText, 100, ImGuiInputTextFlags.CallbackCompletion);
+        ImGui.InputTextWithHint("##search", "例如「絕境戰」", ref _searchText, 100, ImGuiInputTextFlags.CallbackCompletion);
 
         if (ImGui.IsItemHovered() && !ImGui.IsItemFocused())
         {
             ImGui.BeginTooltip();
-            ImGui.Text("Type here to search for any specific instance by its respective title.");
+            ImGui.Text("在此依名稱搜尋指定任務。");
             ImGui.EndTooltip();
         }
     }
@@ -371,9 +371,9 @@ public sealed class ModuleViewer : IDisposable
     private string ModuleHelpText(ModuleInfo info)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(CultureInfo.CurrentCulture, $"Cooldown planning: {(info.Info.PlanLevel > 0 ? $"L{info.Info.PlanLevel}" : "not supported")}");
+        sb.AppendLine(CultureInfo.CurrentCulture, $"冷卻規劃：{(info.Info.PlanLevel > 0 ? $"L{info.Info.PlanLevel}" : "不支援")}");
         if (info.Info.Contributors.Length > 0)
-            sb.AppendLine(CultureInfo.CurrentCulture, $"Contributors: {info.Info.Contributors}");
+            sb.AppendLine(CultureInfo.CurrentCulture, $"貢獻者：{info.Info.Contributors}");
         return sb.ToString();
     }
 
@@ -387,7 +387,7 @@ public sealed class ModuleViewer : IDisposable
         {
             foreach (var plan in plans.Plans)
             {
-                if (ImGui.Selectable($"Edit {cls} '{plan.Name}' ({plan.Guid})"))
+                if (ImGui.Selectable($"編輯 {cls}「{plan.Name}」（{plan.Guid}）"))
                 {
                     UIPlanDatabaseEditor.StartPlanEditor(_planDB, plan);
                 }
@@ -397,7 +397,7 @@ public sealed class ModuleViewer : IDisposable
         var player = _ws.Party.Player();
         if (player != null)
         {
-            if (ImGui.Selectable($"New plan for {player.Class}..."))
+            if (ImGui.Selectable($"為 {player.Class} 建立新計畫……"))
             {
                 var plans = mplans.GetOrAdd(player.Class);
                 var plan = new Plan($"New {plans.Plans.Count + 1}", info.ModuleType) { Guid = Guid.NewGuid().ToString(), Class = player.Class, Level = info.PlanLevel };

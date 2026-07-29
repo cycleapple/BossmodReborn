@@ -11,7 +11,7 @@ public sealed class UIRotationWindow : UIWindow
     private readonly AutorotationConfig _config = Service.Config.Get<AutorotationConfig>();
     private readonly EventSubscriptions _subscriptions;
 
-    public UIRotationWindow(RotationModuleManager mgr, ActionManagerEx amex, Action openConfig) : base("Autorotation", false, new(400, 400), ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoFocusOnAppearing)
+    public UIRotationWindow(RotationModuleManager mgr, ActionManagerEx amex, Action openConfig) : base("自動循環###Autorotation", false, new(400, 400), ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoFocusOnAppearing)
     {
         _mgr = mgr;
         _amex = amex;
@@ -56,7 +56,7 @@ public sealed class UIRotationWindow : UIWindow
         var activeModule = _mgr.Bossmods.ActiveModule;
         if (activeModule != null)
         {
-            ImGui.TextUnformatted($"CD Plan:");
+            ImGui.TextUnformatted("冷卻計畫：");
 
             if (activeModule.Info?.PlanLevel > 0)
             {
@@ -70,7 +70,7 @@ public sealed class UIRotationWindow : UIWindow
                 }
 
                 ImGui.SameLine();
-                if (ImGui.Button(plans.SelectedIndex >= 0 ? "Edit" : "New"))
+                if (ImGui.Button(plans.SelectedIndex >= 0 ? "編輯" : "新增"))
                 {
                     if (plans.SelectedIndex < 0)
                     {
@@ -85,13 +85,13 @@ public sealed class UIRotationWindow : UIWindow
                 {
                     ImGui.SameLine();
                     using var style = ImRaii.PushColor(ImGuiCol.Text, Colors.TextColor2);
-                    UIMisc.HelpMarker(() => "You have a preset activated, which fully overrides the CD plan!", FontAwesomeIcon.ExclamationTriangle);
+                    UIMisc.HelpMarker(() => "目前已啟用預設，會完全覆寫冷卻計畫！", FontAwesomeIcon.ExclamationTriangle);
                 }
             }
         }
 
         // TODO: more fancy action history/queue...
-        ImGui.TextUnformatted($"Modules: {_mgr}");
+        ImGui.TextUnformatted($"模組：{_mgr}");
         if (_mgr.Preset?.Modules.Any(m => m.TransientSettings.Count > 0) ?? false)
         {
             ImGui.SameLine();
@@ -100,7 +100,7 @@ public sealed class UIRotationWindow : UIWindow
             if (ImGui.IsItemHovered())
             {
                 using var tooltip = ImRaii.Tooltip();
-                ImGui.TextUnformatted("Transient strategies:");
+                ImGui.TextUnformatted("暫時策略：");
                 foreach (var m in _mgr.Preset.Modules.Where(m => m.TransientSettings.Count > 0))
                 {
                     ImGui.TextUnformatted($"> {m.Type.FullName}");
@@ -129,7 +129,7 @@ public sealed class UIRotationWindow : UIWindow
         if (mgr.Player == null)
             return modified;
 
-        ImGui.TextUnformatted("Presets:");
+        ImGui.TextUnformatted("預設：");
 
         ImGui.SameLine();
 
@@ -137,7 +137,7 @@ public sealed class UIRotationWindow : UIWindow
         using (ImRaii.PushColor(ImGuiCol.ButtonHovered, Colors.ButtonPushColor3, mgr.Preset == RotationModuleManager.ForceDisable))
         using (ImRaii.PushColor(ImGuiCol.ButtonActive, Colors.ButtonPushColor4, mgr.Preset == RotationModuleManager.ForceDisable))
         {
-            if (ImGui.Button("Disabled"))
+            if (ImGui.Button("停用"))
             {
                 mgr.Preset = mgr.Preset == RotationModuleManager.ForceDisable ? null : RotationModuleManager.ForceDisable;
                 modified |= true;

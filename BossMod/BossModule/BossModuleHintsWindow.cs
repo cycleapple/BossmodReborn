@@ -8,7 +8,7 @@ public sealed class BossModuleHintsWindow : UIWindow
     private readonly BossModuleManager _mgr;
     private readonly ZoneModuleManager _zmm;
 
-    public BossModuleHintsWindow(BossModuleManager mgr, ZoneModuleManager zmm) : base("Boss module hints", false, new(400, 100))
+    public BossModuleHintsWindow(BossModuleManager mgr, ZoneModuleManager zmm) : base("首領模組提示###Boss module hints", false, new(400, 100))
     {
         _mgr = mgr;
         _zmm = zmm;

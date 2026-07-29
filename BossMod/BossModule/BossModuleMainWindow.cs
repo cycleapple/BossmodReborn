@@ -24,7 +24,7 @@ public sealed class BossModuleMainWindow : UIWindow
         var showZoneModule = ShowZoneModule();
         IsOpen = BossModuleManager.Config.Enable && (_mgr.LoadedModules.Count > 0 || showZoneModule);
         ShowCloseButton = _mgr.ActiveModule != null && !showZoneModule;
-        WindowName = (showZoneModule ? $"Zone module ({_zmm.ActiveModule?.GetType().Name})" : _mgr.ActiveModule != null ? $"Boss module ({_mgr.ActiveModule.GetType().Name})" : "Loaded boss modules") + _windowID;
+        WindowName = (showZoneModule ? $"區域模組（{_zmm.ActiveModule?.GetType().Name}）" : _mgr.ActiveModule != null ? $"首領模組（{_mgr.ActiveModule.GetType().Name}）" : "已載入的首領模組") + _windowID;
         Flags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
         if (BossModuleManager.Config.TrishaMode)
             Flags |= ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoBackground;
