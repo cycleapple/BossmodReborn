@@ -2,10 +2,10 @@
 
 namespace BossMod.ClassShared;
 
-[ConfigDisplay(Name = "Cross-class actions", Parent = typeof(ActionTweaksConfig), Order = -5)]
+[ConfigDisplay(Name = "共通技能", Parent = typeof(ActionTweaksConfig), Order = -5)]
 public sealed class SharedActionsConfig : ConfigNode
 {
-    [PropertyDisplay("Align dash actions with camera direction (Lost Swift, Occult Featherfoot, etc)")]
+    [PropertyDisplay("使位移技能方向與鏡頭一致（失傳敏捷術、秘跡輕身步等）")]
     public bool AlignDashToCamera = false;
 }
 

@@ -32,7 +32,8 @@ sealed class AddInterruptHint(BossModule module) : BossComponent(module)
         for (var i = 0; i < countD; ++i)
         {
             var e = hints.FindEnemy(castersDonut[i]);
-            e?.ShouldBeInterrupted = true;
+            if (e != null)
+                e.ShouldBeInterrupted = true;
         }
         if (countD != 0)
             return;
@@ -40,7 +41,8 @@ sealed class AddInterruptHint(BossModule module) : BossComponent(module)
         for (var i = 0; i < countC; ++i)
         {
             var e = hints.FindEnemy(castersCross[i]);
-            e?.ShouldBeInterrupted = true;
+            if (e != null)
+                e.ShouldBeInterrupted = true;
         }
     }
 

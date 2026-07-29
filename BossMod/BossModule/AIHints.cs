@@ -243,7 +243,8 @@ public sealed class AIHints
     public void SetPriority(Actor? actor, int priority)
     {
         var enemy = FindEnemy(actor);
-        enemy?.Priority = priority;
+        if (enemy != null)
+            enemy.Priority = priority;
     }
 
     public void InteractWithOID(WorldState ws, uint oid) => InteractWithTarget = ws.Actors.FirstOrDefault(a => a.OID == oid && a.IsTargetable);

@@ -2,44 +2,44 @@
 
 public record struct ReplayMemory(string Path, bool IsOpen, DateTime PlaybackPosition);
 
-[ConfigDisplay(Name = "Replays", Order = 0)]
+[ConfigDisplay(Name = "戰鬥重播", Order = 0)]
 public sealed class ReplayManagementConfig : ConfigNode
 {
-    [PropertyDisplay("Show replay management UI")]
+    [PropertyDisplay("顯示重播管理介面")]
     public bool ShowUI = false;
 
-    [PropertyDisplay("Show chat alert when a duty with no module is entered or recorded")]
+    [PropertyDisplay("進入或錄製未提供模組的任務時，在聊天視窗顯示提醒")]
     public bool ImportantDutyAlert = true;
 
-    [PropertyDisplay("Auto record replays on duty start/end or outdoor module start/end")]
+    [PropertyDisplay("任務或野外模組開始／結束時自動錄製重播")]
     public bool AutoRecord = false;
 
-    [PropertyDisplay("Auto record in Duty Recorder replays", tooltip: "Requires auto-record to be turned on")]
+    [PropertyDisplay("任務記錄器重播時自動錄製", tooltip: "必須先啟用自動錄製。")]
     public bool AutoARR = false;
 
-    [PropertyDisplay("Max replays to keep before removal")]
+    [PropertyDisplay("自動移除前最多保留的重播數量")]
     [PropertySlider(0, 1000)]
     public int MaxReplays = 0;
 
-    [PropertyDisplay("Record and store server packets in the replay")]
+    [PropertyDisplay("在重播中記錄並儲存伺服器封包")]
     public bool RecordServerPackets = false;
 
-    [PropertyDisplay("Dump server packets into dalamud.log")]
+    [PropertyDisplay("將伺服器封包輸出至 dalamud.log")]
     public bool DumpServerPackets = false;
 
-    [PropertyDisplay("Ignore packets for other players when dumping to dalamud.log")]
+    [PropertyDisplay("輸出至 dalamud.log 時忽略其他玩家的封包")]
     public bool DumpServerPacketsPlayerOnly = false;
 
-    [PropertyDisplay("Dump client packets into dalamud.log")]
+    [PropertyDisplay("將客戶端封包輸出至 dalamud.log")]
     public bool DumpClientPackets = false;
 
-    [PropertyDisplay("Format for recorded logs")]
+    [PropertyDisplay("錄製紀錄的格式")]
     public ReplayLogFormat WorldLogFormat = ReplayLogFormat.BinaryCompressed;
 
-    [PropertyDisplay("Open previously open replays on plugin reload")]
+    [PropertyDisplay("插件重新載入時開啟先前未關閉的重播")]
     public bool RememberReplays;
 
-    [PropertyDisplay("Remember playback position for previously opened replays")]
+    [PropertyDisplay("記住先前開啟重播的播放位置")]
     public bool RememberReplayTimes;
 
     // TODO: this should not be part of the actual config! figure out where to store transient user preferences...
