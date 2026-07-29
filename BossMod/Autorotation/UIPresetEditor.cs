@@ -86,7 +86,7 @@ public sealed class UIPresetEditor
     {
         using (ImRaii.Disabled(_sourcePresetDefault))
         {
-            if (ImGui.InputText("Name", ref Preset.Name, 256))
+            if (ImGui.InputText("名稱", ref Preset.Name, 256))
             {
                 Modified = true;
                 NameConflict = CheckNameConflict();
@@ -96,8 +96,8 @@ public sealed class UIPresetEditor
         using var table = ImRaii.Table("preset_details", 2);
         if (!table)
             return;
-        ImGui.TableSetupColumn("Modules", ImGuiTableColumnFlags.WidthFixed, 200 * ImGuiHelpers.GlobalScale);
-        ImGui.TableSetupColumn("Strategies");
+        ImGui.TableSetupColumn("模組", ImGuiTableColumnFlags.WidthFixed, 200 * ImGuiHelpers.GlobalScale);
+        ImGui.TableSetupColumn("策略");
         ImGui.TableNextColumn();
         DrawModulesList();
         ImGui.TableNextColumn();
@@ -168,10 +168,10 @@ public sealed class UIPresetEditor
 
         using var d = ImRaii.Disabled(_sourcePresetDefault);
 
-        if (ImGui.Button("Add##module", width))
+        if (ImGui.Button("新增##module", width))
             ImGui.OpenPopup("add_module");
 
-        if (UIMisc.Button("Remove##module", width.X, (_selectedModuleIndex < 0, "Select any module to remove"), (!ImGui.GetIO().KeyShift, "Hold shift")))
+        if (UIMisc.Button("移除##module", width.X, (_selectedModuleIndex < 0, "請選擇要移除的模組"), (!ImGui.GetIO().KeyShift, "按住 Shift")))
         {
             var m = Preset.Modules[_selectedModuleIndex];
             AddAvailableModule(m.Type, m.Definition, m.Builder, _availableModules);
@@ -224,7 +224,7 @@ public sealed class UIPresetEditor
     {
         if (_selectedModuleIndex < 0)
         {
-            ImGui.TextUnformatted("Add or select rotation module to configure its strategies");
+            ImGui.TextUnformatted("新增或選擇循環模組，以設定其策略");
             return;
         }
 
@@ -233,7 +233,7 @@ public sealed class UIPresetEditor
         var width = new Vector2(ImGui.GetContentRegionAvail().X, 0);
         var ms = Preset.Modules[_selectedModuleIndex];
 
-        ImGui.Checkbox("Show hidden tracks", ref _showHiddenTracks);
+        ImGui.Checkbox("顯示隱藏策略軌", ref _showHiddenTracks);
 
         using var _ = ImRaii.PushStyle(ImGuiStyleVar.CellPadding, new Vector2(5, 5));
         using var table = ImRaii.Table("preset_options", 2, ImGuiTableFlags.BordersInnerH);
@@ -281,11 +281,11 @@ public sealed class UIPresetEditor
         ImGui.TableNextRow();
         ImGui.TableNextColumn();
         ImGui.Dummy(new(1, 27));
-        ImGui.Text("Hotkey overrides");
+        ImGui.Text("快捷鍵覆寫");
         ImGui.TableNextColumn();
         ImGui.Dummy(new(1, 24));
         ImGui.SetNextItemWidth(200 * ImGuiHelpers.GlobalScale);
-        using (var combo = ImRaii.Combo("###selectover", "Add new..."))
+        using (var combo = ImRaii.Combo("###selectover", "新增…"))
         {
             if (combo)
             {
@@ -315,7 +315,7 @@ public sealed class UIPresetEditor
             ImGui.SameLine();
             Modified |= DrawModifier(ref val.Mod, Preset.Modifier.Alt, "Alt");
             ImGui.SameLine();
-            if (ImGui.Button("Delete override"))
+            if (ImGui.Button("刪除覆寫"))
                 ms.SerializedSettings.RemoveAt(i);
         }
     }
@@ -326,10 +326,10 @@ public sealed class UIPresetEditor
         {
             ImGui.TableNextRow();
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted("Auto-heal/auto-raise");
+            ImGui.TextUnformatted("自動治療／自動復活");
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted("Not part of the standard rotation. Use the Healer AI module instead.");
-            if (ImGui.Button("Add Healer AI"))
+            ImGui.TextUnformatted("這不是標準循環的一部分，請改用治療 AI 模組。");
+            if (ImGui.Button("新增治療 AI"))
             {
                 var rot = RotationModuleRegistry.Modules[THealerAI];
                 var index = Preset.AddModule(THealerAI, rot.Definition, rot.Builder);
@@ -339,7 +339,7 @@ public sealed class UIPresetEditor
                 return true;
             }
             ImGui.SameLine();
-            if (ImGui.Button("Don't show this suggestion again"))
+            if (ImGui.Button("不要再顯示此建議"))
             {
                 _autorotConfig.SuggestHealerAI = false;
                 _autorotConfig.Modified.Fire();

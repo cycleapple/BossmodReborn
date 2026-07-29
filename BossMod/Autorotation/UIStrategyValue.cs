@@ -8,11 +8,11 @@ public static class UIStrategyValue
 {
     private static readonly (string Name, float Value)[] PriorityBaselines =
     [
-        ("Very Low", ActionQueue.Priority.VeryLow),
-        ("Low", ActionQueue.Priority.Low),
-        ("Medium", ActionQueue.Priority.Medium),
-        ("High", ActionQueue.Priority.High),
-        ("Very High", ActionQueue.Priority.VeryHigh),
+        ("極低", ActionQueue.Priority.VeryLow),
+        ("低", ActionQueue.Priority.Low),
+        ("中", ActionQueue.Priority.Medium),
+        ("高", ActionQueue.Priority.High),
+        ("極高", ActionQueue.Priority.VeryHigh),
     ];
 
     public static List<string> Preview(StrategyValue value, StrategyConfigTrack cfg, BossModuleRegistry.Info? moduleInfo)
@@ -22,10 +22,10 @@ public static class UIStrategyValue
             case StrategyValueTrack t:
                 var opt = cfg.Options[t.Option];
                 return [
-                    $"Option: {opt.UIName}",
-                    $"Comment: {value.Comment}",
-                    $"Priority: {(float.IsNaN(t.PriorityOverride) ? $"default ({opt.DefaultPriority:f})" : t.PriorityOverride.ToString("f"))}",
-                    $"Target: {PreviewTarget(t, moduleInfo)}"
+                    $"選項：{opt.UIName}",
+                    $"備註：{value.Comment}",
+                    $"優先度：{(float.IsNaN(t.PriorityOverride) ? $"預設（{opt.DefaultPriority:f}）" : t.PriorityOverride.ToString("f"))}",
+                    $"目標：{PreviewTarget(t, moduleInfo)}"
                 ];
             default:
                 return [];
@@ -53,14 +53,14 @@ public static class UIStrategyValue
         if (value is StrategyValueTrack tr)
         {
             modified |= DrawEditorTrackOption(tr, cfg, level);
-            modified |= ImGui.InputText("Comment", ref value.Comment, 512);
+            modified |= ImGui.InputText("備註", ref value.Comment, 512);
             modified |= DrawEditorPriority(tr);
             modified |= DrawEditorTarget(tr, cfg.Options[tr.Option].SupportedTargets, moduleInfo);
         }
         return modified;
     }
 
-    public static bool DrawEditorTrackOption(StrategyValueTrack value, StrategyConfigTrack cfg, int? level, string label = "Option")
+    public static bool DrawEditorTrackOption(StrategyValueTrack value, StrategyConfigTrack cfg, int? level, string label = "選項")
     {
         var modified = false;
         using (var combo = ImRaii.Combo(label, cfg.Options[value.Option].UIName))
@@ -88,21 +88,21 @@ public static class UIStrategyValue
     {
         var modified = false;
         var overridePriority = !float.IsNaN(value.PriorityOverride);
-        if (ImGui.Checkbox("Override priority", ref overridePriority))
+        if (ImGui.Checkbox("覆寫優先度", ref overridePriority))
         {
             modified = true;
             value.PriorityOverride = overridePriority ? ActionQueue.Priority.Low : float.NaN;
         }
         ImGui.SameLine();
         UIMisc.HelpMarker("""
-            Define custom priority for the corresponding action.
-            Priority is compared against other candidate actions; it is suggested to use a predefined base and add a small offset to disambiguate multiple actions.
-            Base priorities are the following:
-            * Very Low (1000) - action will be used only if there is nothing else to press.
-            * Low (2000) - action will be used only if it won't delay any dps action (it might delay eg. spending a second charge when there is no risk of overcapping).
-            * Medium (3000) - action will be used in next possible ogcd slot, but it won't delay gcd or any extremely important ogcds; you can expect to have at least 1 slot for medium actions per gcd.
-            * High (4000) - action will be used in the next possible ogcd slot; it won't delay gcd, but might break the rotation in some cases if not used carefully.
-            * Very High (5000) - action will be used asap; will delay gcd if needed.
+            設定對應技能的自訂優先度。
+            優先度會與其他候選技能比較；建議選用預設基準，再加上少量偏移以區分多個技能。
+            各基準優先度如下：
+            * 極低（1000）— 只有沒有其他技能可按時才會使用。
+            * 低（2000）— 只有不會延後任何輸出技能時才會使用（例如沒有溢出風險時，可能延後消耗第二層充能）。
+            * 中（3000）— 會在下一個可用的能力技空檔使用，但不會延後戰技／魔法或極重要的能力技；通常每個 GCD 至少會留一個空檔給中優先度技能。
+            * 高（4000）— 會在下一個可用的能力技空檔使用；不會延後 GCD，但若使用不慎，某些情況可能打亂循環。
+            * 極高（5000）— 會儘快使用，必要時也會延後 GCD。
             """);
 
         if (overridePriority)
@@ -149,7 +149,7 @@ public static class UIStrategyValue
     public static bool DrawEditorTarget(StrategyValueTrack value, ActionTargets supportedTargets, BossModuleRegistry.Info? moduleInfo)
     {
         var modified = false;
-        using (var combo = ImRaii.Combo("Target", value.Target.ToString()))
+        using (var combo = ImRaii.Combo("目標", value.Target.ToString()))
         {
             if (combo)
             {
@@ -169,19 +169,19 @@ public static class UIStrategyValue
         switch (value.Target)
         {
             case StrategyTarget.PartyByAssignment:
-                modified |= DrawEditorTargetParamCombo<PartyRolesConfig.Assignment>(ref value.TargetParam, "Assignment");
+                modified |= DrawEditorTargetParamCombo<PartyRolesConfig.Assignment>(ref value.TargetParam, "職責分配");
                 break;
             case StrategyTarget.PartyWithLowestHP:
                 if (supportedTargets.HasFlag(ActionTargets.Self))
-                    modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.IncludeSelf, "Allow self", false);
-                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeTanks, "Allow tanks", true);
-                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeHealers, "Allow healers", true);
-                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeMelee, "Allow melee", true);
-                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeRanged, "Allow ranged", true);
-                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeNoPredictedDamage, "Only if more damage is expected", false);
+                    modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.IncludeSelf, "允許自己", false);
+                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeTanks, "允許防護職業", true);
+                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeHealers, "允許治療職業", true);
+                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeMelee, "允許近戰職業", true);
+                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeRanged, "允許遠程職業", true);
+                modified |= DrawEditorTargetParamFlags(ref value.TargetParam, StrategyPartyFiltering.ExcludeNoPredictedDamage, "僅限預期會受到更多傷害時", false);
                 break;
             case StrategyTarget.EnemyWithHighestPriority:
-                modified |= DrawEditorTargetParamCombo<StrategyEnemySelection>(ref value.TargetParam, "Criterion");
+                modified |= DrawEditorTargetParamCombo<StrategyEnemySelection>(ref value.TargetParam, "選擇條件");
                 break;
             case StrategyTarget.EnemyByOID:
                 if (moduleInfo?.ObjectIDType != null)
@@ -196,7 +196,7 @@ public static class UIStrategyValue
                 break;
             case StrategyTarget.PointWaymark:
                 var wm = (Waymark)value.TargetParam;
-                if (UICombo.Enum("Waymark", ref wm))
+                if (UICombo.Enum("場地標記", ref wm))
                 {
                     value.TargetParam = (int)wm;
                     modified = true;
@@ -213,10 +213,10 @@ public static class UIStrategyValue
             }
             else
             {
-                modified |= ImGui.DragFloat("Offset", ref value.Offset1, 0.1f, 0, 30);
-                modified |= ImGui.DragFloat("Direction", ref value.Offset2, 1, -180, 180);
+                modified |= ImGui.DragFloat("偏移", ref value.Offset1, 0.1f, 0, 30);
+                modified |= ImGui.DragFloat("方向", ref value.Offset2, 1, -180, 180);
                 if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip($"In degrees; 0 is south, increases CCW (so 90 is E, 180 is N, -90 is W)");
+                    ImGui.SetTooltip("以度為單位；0 為南，逆時針增加（90 為東、180 為北、-90 為西）");
             }
         }
 
@@ -236,13 +236,13 @@ public static class UIStrategyValue
 
     private static string PreviewParam(StrategyPartyFiltering pf)
     {
-        string excludeIfSet(StrategyPartyFiltering flag, string value) => pf.HasFlag(flag) ? $", exclude {value}" : "";
-        return $"{(pf.HasFlag(StrategyPartyFiltering.IncludeSelf) ? "include" : "exclude")} self"
-            + excludeIfSet(StrategyPartyFiltering.ExcludeTanks, "tanks")
-            + excludeIfSet(StrategyPartyFiltering.ExcludeHealers, "healers")
-            + excludeIfSet(StrategyPartyFiltering.ExcludeMelee, "melee")
-            + excludeIfSet(StrategyPartyFiltering.ExcludeRanged, "ranged")
-            + excludeIfSet(StrategyPartyFiltering.ExcludeNoPredictedDamage, "players not expecting damage");
+        string excludeIfSet(StrategyPartyFiltering flag, string value) => pf.HasFlag(flag) ? $"、排除{value}" : "";
+        return $"{(pf.HasFlag(StrategyPartyFiltering.IncludeSelf) ? "包含" : "排除")}自己"
+            + excludeIfSet(StrategyPartyFiltering.ExcludeTanks, "防護職業")
+            + excludeIfSet(StrategyPartyFiltering.ExcludeHealers, "治療職業")
+            + excludeIfSet(StrategyPartyFiltering.ExcludeMelee, "近戰職業")
+            + excludeIfSet(StrategyPartyFiltering.ExcludeRanged, "遠程職業")
+            + excludeIfSet(StrategyPartyFiltering.ExcludeNoPredictedDamage, "預期不會受到傷害的玩家");
     }
 
     private static bool DrawEditorTargetParamCombo<E>(ref int current, string text) where E : Enum

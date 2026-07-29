@@ -65,7 +65,7 @@ public sealed class ReplayManager : IDisposable
         public void Show()
         {
             Analysis ??= new([.. Replays.Where(r => r.Replay.IsCompletedSuccessfully && r.Replay.Result.Ops.Count > 0).Select(r => r.Replay.Result)]);
-            Window ??= new($"Multiple logs: {Identifier}", Analysis.Draw, false, new(1200f, 800f));
+            Window ??= new($"多份記錄：{Identifier}", Analysis.Draw, false, new(1200f, 800f));
             Window.IsOpen = true;
         }
     }
@@ -167,33 +167,33 @@ public sealed class ReplayManager : IDisposable
             }
             else if (e.Replay.IsFaulted || e.Replay.Result.Ops.Count == 0)
             {
-                ImGui.TextUnformatted("(failed)");
+                ImGui.TextUnformatted("（失敗）");
             }
             else
             {
-                if (ImGui.Button("Actions...", new(100f, default)))
+                if (ImGui.Button("操作…", new(100f, default)))
                     ImGui.OpenPopup("ctx");
                 using var popup = ImRaii.Popup("ctx");
                 if (popup)
                 {
-                    if (ImGui.MenuItem("Show"))
+                    if (ImGui.MenuItem("顯示"))
                     {
                         e.Show(_rotationDB);
                         SaveHistory();
                     }
-                    if (ImGui.MenuItem("Convert to verbose"))
+                    if (ImGui.MenuItem("轉換為詳細文字"))
                         ConvertLog(e.Replay.Result, ReplayLogFormat.TextVerbose);
-                    if (ImGui.MenuItem("Convert to short text"))
+                    if (ImGui.MenuItem("轉換為簡短文字"))
                         ConvertLog(e.Replay.Result, ReplayLogFormat.TextCondensed);
-                    if (ImGui.MenuItem("Convert to uncompressed binary"))
+                    if (ImGui.MenuItem("轉換為未壓縮二進位"))
                         ConvertLog(e.Replay.Result, ReplayLogFormat.BinaryUncompressed);
-                    if (ImGui.MenuItem("Convert to compressed binary"))
+                    if (ImGui.MenuItem("轉換為壓縮二進位"))
                         ConvertLog(e.Replay.Result, ReplayLogFormat.BinaryCompressed);
                 }
             }
 
             ImGui.TableNextColumn();
-            if (ImGui.Button(e.Replay.IsCompleted ? "Unload" : "Cancel"))
+            if (ImGui.Button(e.Replay.IsCompleted ? "卸載" : "取消"))
             {
                 e.Dispose();
                 foreach (var a in _analysisEntries.Where(a => !a.Disposed && a.Replays.Contains(e)))
@@ -216,7 +216,7 @@ public sealed class ReplayManager : IDisposable
         var dispose = false;
         var numSelected = _replayEntries.Count(e => e.Selected);
         var shouldSelectAll = _replayEntries.Count == 0 || numSelected < _replayEntries.Count;
-        if (ImGui.Button(shouldSelectAll ? "Select all" : "Unselect all"))
+        if (ImGui.Button(shouldSelectAll ? "全選" : "取消全選"))
         {
             foreach (var e in _replayEntries)
                 e.Selected = shouldSelectAll;
@@ -224,12 +224,12 @@ public sealed class ReplayManager : IDisposable
         using (ImRaii.Disabled(numSelected == 0))
         {
             ImGui.SameLine();
-            if (ImGui.Button("Analyze selected"))
+            if (ImGui.Button("分析所選項目"))
             {
                 _analysisEntries.Add(new((++_nextAnalysisId).ToString(), [.. _replayEntries.Where(e => e.Selected)]));
             }
             ImGui.SameLine();
-            if (ImGui.Button("Unload selected"))
+            if (ImGui.Button("卸載所選項目"))
             {
                 foreach (var e in _replayEntries.Where(e => e.Selected))
                     e.Dispose();
@@ -239,7 +239,7 @@ public sealed class ReplayManager : IDisposable
             }
         }
         ImGui.SameLine();
-        if (ImGui.Button("Unload all"))
+        if (ImGui.Button("全部卸載"))
         {
             foreach (var e in _replayEntries)
                 e.Dispose();
@@ -258,13 +258,13 @@ public sealed class ReplayManager : IDisposable
         ImGui.SameLine();
         if (ImGui.Button("..."))
         {
-            _fileDialog ??= new FileDialog("select_log", "Select file or directory", "Log files{.log},All files{.*}", _logDirectory, "", ".log", 1, false, ImGuiFileDialogFlags.SelectOnly);
+            _fileDialog ??= new FileDialog("select_log", "選擇檔案或資料夾", "記錄檔{.log},所有檔案{.*}", _logDirectory, "", ".log", 1, false, ImGuiFileDialogFlags.SelectOnly);
             _fileDialog.Show();
         }
         ImGui.SameLine();
         using (ImRaii.Disabled(_path.Length == 0 || _replayEntries.Any(e => e.Path == _path)))
         {
-            if (ImGui.Button("Open"))
+            if (ImGui.Button("開啟"))
             {
                 CleanPath();
                 _replayEntries.Add(new(_path, true));
@@ -274,7 +274,7 @@ public sealed class ReplayManager : IDisposable
         ImGui.SameLine();
         using (ImRaii.Disabled(_path.Length == 0 || _analysisEntries.Any(e => e.Identifier == _path)))
         {
-            if (ImGui.Button("Analyze all"))
+            if (ImGui.Button("全部分析"))
             {
                 CleanPath();
                 var replays = LoadAll(_path);
@@ -285,7 +285,7 @@ public sealed class ReplayManager : IDisposable
         ImGui.SameLine();
         using (ImRaii.Disabled(_path.Length == 0))
         {
-            if (ImGui.Button("Load all"))
+            if (ImGui.Button("全部載入"))
             {
                 CleanPath();
                 LoadAll(_path);

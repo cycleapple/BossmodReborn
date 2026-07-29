@@ -25,28 +25,28 @@ sealed class AnalysisManager : IDisposable
 
         public void Draw(UITree tree)
         {
-            foreach (var n in tree.Node("Unknown action effects"))
+            foreach (var n in tree.Node("未知技能效果"))
                 _unkEffects.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Participant info", false, Colors.TextColor1, () => _participantInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("參與者資訊", false, Colors.TextColor1, () => _participantInfo.Get().DrawContextMenu()))
                 _participantInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Ability info", false, Colors.TextColor1, () => _abilityInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("技能資訊", false, Colors.TextColor1, () => _abilityInfo.Get().DrawContextMenu()))
                 _abilityInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Player class definitions"))
+            foreach (var n in tree.Node("玩家職業定義"))
                 _classDefinitions.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Client action weirdness"))
+            foreach (var n in tree.Node("客戶端技能異常"))
                 _clientActions.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Effect results: missing confirmations"))
+            foreach (var n in tree.Node("效果結果：缺少確認"))
                 _effectResultMissing.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Effect results: unexpected confirmations"))
+            foreach (var n in tree.Node("效果結果：非預期確認"))
                 _effectResultUnexpected.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Effect results: reorders"))
+            foreach (var n in tree.Node("效果結果：順序變更"))
                 _effectResultReorder.Get().Draw(tree);
         }
     }
@@ -84,30 +84,30 @@ sealed class AnalysisManager : IDisposable
 
         public void Draw(UITree tree)
         {
-            foreach (var n in tree.Node("State transition timings"))
+            foreach (var n in tree.Node("狀態轉換時間"))
                 _transitionTimings.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Participant info", false, Colors.TextColor1, () => _participantInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("參與者資訊", false, Colors.TextColor1, () => _participantInfo.Get().DrawContextMenu()))
                 _participantInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Ability info", false, Colors.TextColor1, () => _abilityInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("技能資訊", false, Colors.TextColor1, () => _abilityInfo.Get().DrawContextMenu()))
                 _abilityInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Status info", false, Colors.TextColor1, () => _statusInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("狀態資訊", false, Colors.TextColor1, () => _statusInfo.Get().DrawContextMenu()))
                 _statusInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Icon info", false, Colors.TextColor1, () => _iconInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("圖示資訊", false, Colors.TextColor1, () => _iconInfo.Get().DrawContextMenu()))
                 _iconInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Tether info", false, Colors.TextColor1, () => _tetherInfo.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("連線資訊", false, Colors.TextColor1, () => _tetherInfo.Get().DrawContextMenu()))
                 _tetherInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Map effect info", false, Colors.TextColor1))
+            foreach (var n in tree.Node("地圖效果資訊", false, Colors.TextColor1))
                 _mapEffectInfo.Get().Draw(tree);
-            foreach (var n in tree.Node("Director update info", false, Colors.TextColor1))
+            foreach (var n in tree.Node("Director 更新資訊", false, Colors.TextColor1))
                 _directorInfo.Get().Draw(tree);
 
-            foreach (var n in tree.Node("Arena bounds", false, Colors.TextColor1, () => _arenaBounds.Get().DrawContextMenu()))
+            foreach (var n in tree.Node("場地邊界", false, Colors.TextColor1, () => _arenaBounds.Get().DrawContextMenu()))
                 _arenaBounds.Get().Draw(tree);
 
             if (_teaSpecific != null)
@@ -138,12 +138,12 @@ sealed class AnalysisManager : IDisposable
 
     public void Draw()
     {
-        ImGui.TextUnformatted($"{_replays.Count} logs found");
-        foreach (var n in _tree.Node("Global analysis"))
+        ImGui.TextUnformatted($"找到 {_replays.Count} 份記錄");
+        foreach (var n in _tree.Node("全域分析"))
         {
             _global.Draw(_tree);
         }
-        foreach (var n in _tree.Nodes(_perEncounter, kv => new($"Encounter analysis for {kv.Key:X} ({BossModuleRegistry.FindByOID(kv.Key)?.ModuleType.Name})")))
+        foreach (var n in _tree.Nodes(_perEncounter, kv => new($"遭遇戰分析：{kv.Key:X}（{BossModuleRegistry.FindByOID(kv.Key)?.ModuleType.Name}）")))
         {
             n.Value.Draw(_tree);
         }
