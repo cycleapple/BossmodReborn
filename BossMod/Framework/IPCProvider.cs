@@ -8,6 +8,7 @@ namespace BossMod;
 
 sealed class IPCProvider : IDisposable
 {
+    private static readonly string[] IPCPrefixes = ["BossMod.", "BossModReborn."];
     private Action? _disposeActions;
 
     public IPCProvider(RotationModuleManager autorotation, ActionManagerEx amex, MovementOverride movement, AIManager ai)
@@ -180,50 +181,70 @@ sealed class IPCProvider : IDisposable
 
         Register("AI.SetPreset", (string name) => ai.SetAIPreset(autorotation.Database.Presets.AllPresets.FirstOrDefault(x => x.Name.Trim().Equals(name.Trim(), StringComparison.OrdinalIgnoreCase))));
         Register("AI.GetPreset", () => ai.GetAIPreset);
+        Register("AI.IsActive", () => ai.IsActive);
+        Register("AI.ForbidActions", () => ai.ForbidActions);
     }
 
     public void Dispose() => _disposeActions?.Invoke();
 
     private void Register<TRet>(string name, Func<TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     private void Register<T1, TRet>(string name, Func<T1, TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     private void Register<T1, T2, TRet>(string name, Func<T1, T2, TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, T2, TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, T2, TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     private void Register<T1, T2, T3, TRet>(string name, Func<T1, T2, T3, TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     private void Register<T1, T2, T3, T4, TRet>(string name, Func<T1, T2, T3, T4, TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, T4, TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, T4, TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     private void Register<T1, T2, T3, T4, T5, TRet>(string name, Func<T1, T2, T3, T4, T5, TRet> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, T4, T5, TRet>("BossMod." + name);
-        p.RegisterFunc(func);
-        _disposeActions += p.UnregisterFunc;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, T2, T3, T4, T5, TRet>(prefix + name);
+            p.RegisterFunc(func);
+            _disposeActions += p.UnregisterFunc;
+        }
     }
 
     //private void Register(string name, Action func)
@@ -235,8 +256,11 @@ sealed class IPCProvider : IDisposable
 
     private void Register<T1>(string name, Action<T1> func)
     {
-        var p = Service.PluginInterface.GetIpcProvider<T1, object>("BossMod." + name);
-        p.RegisterAction(func);
-        _disposeActions += p.UnregisterAction;
+        foreach (var prefix in IPCPrefixes)
+        {
+            var p = Service.PluginInterface.GetIpcProvider<T1, object>(prefix + name);
+            p.RegisterAction(func);
+            _disposeActions += p.UnregisterAction;
+        }
     }
 }

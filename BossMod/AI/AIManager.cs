@@ -19,6 +19,8 @@ sealed class AIManager : IDisposable
     public WorldState WorldState => Autorot.Bossmods.WorldState;
     public float ForceMovementIn => Beh?.ForceMovementIn ?? float.MaxValue;
     public string GetAIPreset => AiPreset?.Name ?? string.Empty;
+    public bool IsActive => Beh != null;
+    public bool ForbidActions => _config.ForbidActions;
 
     public AIManager(RotationModuleManager autorot, ActionManagerEx amex, MovementOverride movement)
     {
