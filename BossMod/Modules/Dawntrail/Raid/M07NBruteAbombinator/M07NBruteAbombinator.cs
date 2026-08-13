@@ -56,7 +56,10 @@ sealed class NeoBombarianSpecialKB(BossModule module) : Components.SimpleKnockba
                 poly = KnockbackArena.Polygon.Offset(-1f); // shrink polygon by 1 yalm for less suspect kb
                 polyInit = true;
             }
-            ref var c = ref Casters.Ref(0);
+            if (Casters.Count == 0)
+                return;
+
+            ref readonly var c = ref Casters.Ref(0);
             hints.AddForbiddenZone(new SDKnockbackInComplexPolygonAwayFromOrigin(Arena.Center, Module.PrimaryActor.Position, 58f, poly), c.Activation);
         }
     }

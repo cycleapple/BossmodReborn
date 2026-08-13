@@ -4,6 +4,7 @@
   "InternalName": "BossModReborn",
   "Punchline": "首領機制、戰鬥雷達與自動循環輔助",
   "Description": "協助處理首領戰機制的多功能工具，提供雷達、自動循環、冷卻規劃與 AI 功能。",
+  "Changelog": "新增朱雀幻巧戰模組與完整時間軸；回移 UWU 風神階段集合點、Spiny Shield 提示，以及隊伍同步與 M07N 空值防護。",
   "RepoUrl": "https://github.com/FFXIV-CombatReborn/BossmodReborn",
   "IconUrl": "https://raw.githubusercontent.com/FFXIV-CombatReborn/RebornAssets/main/IconAssets/BMR_Icon.png",
   "ImageUrls": [

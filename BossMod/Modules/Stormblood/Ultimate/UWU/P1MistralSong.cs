@@ -21,6 +21,7 @@ class P1MistralSongBoss(BossModule module) : Components.GenericWildCharge(module
 // TODO: verify width
 class P1MistralSongAdds(BossModule module) : Components.CastCounter(module, (uint)AID.MistralSongAdds)
 {
+    private readonly UWUConfig _config = Service.Config.Get<UWUConfig>();
     private readonly List<Actor> _sisters = module.Enemies((uint)OID.GarudaSister);
     private readonly List<Actor> _targets = [];
 
@@ -51,6 +52,11 @@ class P1MistralSongAdds(BossModule module) : Components.CastCounter(module, (uin
     public override void DrawArenaForeground(int pcSlot, Actor pc)
     {
         Arena.Actors(_sisters, Colors.Object, true);
+        if (_config.P1MistralSongFixedLocation && pc.Role != Role.Tank)
+        {
+            var loc = new WPos(107, 107);
+            Arena.AddCircle(loc, 2f, (pc.Position - loc).Length() <= 2f ? Colors.Safe : Colors.Danger);
+        }
     }
 
     public override void OnEventIcon(Actor actor, uint iconID, ulong targetID)
