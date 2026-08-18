@@ -1,4 +1,4 @@
-﻿using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Hooking;
 using Dalamud.Memory;
 using FFXIVClientStructs.FFXIV.Client.Game;
@@ -490,8 +490,8 @@ sealed class WorldStateGameSync : IDisposable
             _ws.Execute(new PartyState.OpLimitBreakChange(lb->CurrentUnits, lb->BarUnits));
     }
 
-    // returns player entry in game's group
-    private unsafe PartyMember* UpdatePartyPlayer(bool recorderPlaybackMode, GroupManager.Group* group)
+    // returns player party member
+    private unsafe PartyState.Member UpdatePartyPlayer(bool recorderPlaybackMode, GroupManager.Group* group)
     {
         // in worldstate, player is always in slot #0
         // in game, there are several considerations:
@@ -537,27 +537,44 @@ sealed class WorldStateGameSync : IDisposable
             // else: just assume there's no player for now...
         }
 
-        var member = player.InstanceId != default && group != null
-            ? group->GetPartyMemberByEntityId((uint)player.InstanceId)
-            : null;
+        // GroupManager's entity-id lookup is unreliable on Taiwan API13, so use the
+        // player ContentId from PlayerState/object #0 as the source of truth.
+        PartyMember* member = null;
+        if (group != null)
+        {
+            for (var i = 0; i < group->MemberCount; ++i)
+            {
+                var candidate = group->PartyMembers.GetPointer(i);
+                if (IsPlayerPartyMember(candidate, player))
+                {
+                    member = candidate;
+                    break;
+                }
+            }
+        }
         if (member != null)
             player.InCutscene |= (member->Flags & 0x10) != default;
         UpdatePartySlot(PartyState.PlayerSlot, player);
-        return member;
+        return player;
     }
 
-    private unsafe void UpdatePartyNormal(GroupManager.Group* group, PartyMember* player)
+    private unsafe void UpdatePartyNormal(GroupManager.Group* group, PartyState.Member player)
     {
         if (group == null)
             return;
+
         // first iterate over previous members, search for match in game state, and reconcile differences - update or remove
         for (var i = PartyState.PlayerSlot + 1; i < PartyState.MaxPartySize; ++i)
         {
             ref var m = ref _ws.Party.Members[i];
-            if (m.ContentId != 0)
+            if (IsSamePartyMember(m, player))
+            {
+                UpdatePartySlot(i, PartyState.EmptySlot);
+            }
+            else if (m.ContentId != 0)
             {
                 // slot was occupied by player => see if it's still in party; either update to current state or clear if it's no longer in party
-                var member = group->GetPartyMemberByContentId(m.ContentId);
+                var member = FindPartyMember(group, m, player);
                 UpdatePartySlot(i, BuildPartyMember(member));
             }
             else if (m.InstanceId != 0)
@@ -574,11 +591,9 @@ sealed class WorldStateGameSync : IDisposable
         for (var i = 0; i < group->MemberCount; ++i)
         {
             var member = group->PartyMembers.GetPointer(i);
-            if ((player == null || member->ContentId != player->ContentId) &&
-                Array.FindIndex(_ws.Party.Members, m => m.ContentId == member->ContentId) < 0)
-            {
-                AddPartyMember(BuildPartyMember(member));
-            }
+            var built = BuildPartyMember(member);
+            if (!IsPlayerPartyMember(member, player) && built.IsValid() && Array.FindIndex(_ws.Party.Members, m => IsSamePartyMember(m, built)) < 0)
+                AddPartyMember(built);
             // else: member is either a player (it was handled by a different function) or already exists in party state
         }
         // consider buddies as party members too
@@ -600,6 +615,7 @@ sealed class WorldStateGameSync : IDisposable
     {
         if (group == null)
             return;
+
         // note: we don't support small-group alliance (should we?)
         // unlike normal party, game's alliance slots never change, so we just keep 1:1 mapping
         var isNormalAlliance = group->IsAlliance && !group->IsSmallGroupAlliance;
@@ -657,6 +673,29 @@ sealed class WorldStateGameSync : IDisposable
                 return i;
         return -1;
     }
+
+    private unsafe PartyMember* FindPartyMember(GroupManager.Group* group, PartyState.Member current, PartyState.Member player)
+    {
+        for (var i = 0; i < group->MemberCount; ++i)
+        {
+            var candidate = group->PartyMembers.GetPointer(i);
+            if (!IsPlayerPartyMember(candidate, player) && IsSamePartyMember(current, BuildPartyMember(candidate)))
+                return candidate;
+        }
+        return null;
+    }
+
+    private unsafe bool IsPlayerPartyMember(PartyMember* candidate, PartyState.Member player)
+    {
+        if (!player.IsValid())
+            return false;
+        if (player.InstanceId != default && candidate->EntityId == player.InstanceId)
+            return true;
+        return player.ContentId != default && candidate->ContentId == player.ContentId && (player.InstanceId == default || candidate->EntityId == default || candidate->NameString == player.Name);
+    }
+
+    private static bool IsSamePartyMember(PartyState.Member left, PartyState.Member right)
+        => left.IsValid() && right.IsValid() && (left.ContentId != default && left.ContentId == right.ContentId || left.InstanceId != default && left.InstanceId == right.InstanceId);
 
     private unsafe PartyState.Member BuildPartyMember(PartyMember* m) => m != null ? new(m->ContentId, m->EntityId, (m->Flags & 0x10) != 0, m->NameString) : PartyState.EmptySlot;
 
