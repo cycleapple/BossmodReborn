@@ -1,0 +1,8 @@
+[
+  {
+    "path": "FFXIVClientStructs",
+    "baseCommit": "94e3749295404ec95aca17d06f9b395518d57f18",
+    "patch": "patches/db59c145327a52d7.patch",
+    "sha256": "4158e94c1449409e35a7a14cfe6da23b7f902566b0e6e63ce9ea60f7c1530b55"
+  }
+]

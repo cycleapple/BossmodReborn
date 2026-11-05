@@ -1,4 +1,4 @@
-﻿using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Dalamud.Bindings.ImGui;
@@ -194,4 +194,10 @@ sealed class Camera
         }
         return true;
     }
+}
+
+internal static class Api14VectorExtensions
+{
+    public static System.Numerics.Vector3 ToSystem(this System.Numerics.Vector3 value) => value;
+    public static System.Numerics.Vector3 ToSystem(this SharpDX.Vector3 value) => new(value.X, value.Y, value.Z);
 }

@@ -318,7 +318,7 @@ sealed class WorldStateGameSync : IDisposable
             inCombat = chr->InCombat;
         }
         var targetable = obj->GetIsTargetable();
-        var renderflags = obj->RenderFlags;
+        var renderflags = (int)obj->RenderFlags;
         var friendly = chr == null || ActionManager.ClassifyTarget(chr) != ActionManager.TargetCategory.Enemy;
         var isDead = obj->IsDead();
         var hasAggro = _playerEnmity.IndexOf(obj->EntityId) >= 0;

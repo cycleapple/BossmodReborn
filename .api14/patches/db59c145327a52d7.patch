@@ -1,0 +1,154 @@
+diff --git a/CExporter/CExporter.csproj b/CExporter/CExporter.csproj
+index f7d0a82c7..d09b97b11 100644
+--- a/CExporter/CExporter.csproj
++++ b/CExporter/CExporter.csproj
+@@ -7,7 +7,7 @@
+     <OutputType>Exe</OutputType>
+     <RootNamespace>CExporter</RootNamespace>
+     <AssemblyName>CExporter</AssemblyName>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <FileAlignment>512</FileAlignment>
+     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+     <Deterministic>true</Deterministic>
+diff --git a/CompatChecker/CompatChecker.csproj b/CompatChecker/CompatChecker.csproj
+index ad2d6d734..04635244d 100644
+--- a/CompatChecker/CompatChecker.csproj
++++ b/CompatChecker/CompatChecker.csproj
+@@ -1,8 +1,8 @@
+-﻿<Project Sdk="Microsoft.NET.Sdk">
++<Project Sdk="Microsoft.NET.Sdk">
+ 
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+     <LangVersion>13</LangVersion>
+diff --git a/ExcelGenerator/ExcelGenerator.csproj b/ExcelGenerator/ExcelGenerator.csproj
+index 180c352a7..71f85a890 100644
+--- a/ExcelGenerator/ExcelGenerator.csproj
++++ b/ExcelGenerator/ExcelGenerator.csproj
+@@ -1,7 +1,7 @@
+-﻿<Project Sdk="Microsoft.NET.Sdk">
++<Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <LangVersion>latest</LangVersion>
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+diff --git a/FFXIVClientStructs.ResolverTester/FFXIVClientStructs.ResolverTester.csproj b/FFXIVClientStructs.ResolverTester/FFXIVClientStructs.ResolverTester.csproj
+index 26ad776c8..98e394d90 100644
+--- a/FFXIVClientStructs.ResolverTester/FFXIVClientStructs.ResolverTester.csproj
++++ b/FFXIVClientStructs.ResolverTester/FFXIVClientStructs.ResolverTester.csproj
+@@ -2,7 +2,7 @@
+ 
+     <PropertyGroup>
+         <OutputType>Exe</OutputType>
+-        <TargetFramework>net9.0</TargetFramework>
++        <TargetFramework>net10.0</TargetFramework>
+         <ImplicitUsings>enable</ImplicitUsings>
+         <Nullable>enable</Nullable>
+         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+diff --git a/FFXIVClientStructs.StdContainerTester/FFXIVClientStructs.StdContainerTester.csproj b/FFXIVClientStructs.StdContainerTester/FFXIVClientStructs.StdContainerTester.csproj
+index 254c0a411..015cea88f 100644
+--- a/FFXIVClientStructs.StdContainerTester/FFXIVClientStructs.StdContainerTester.csproj
++++ b/FFXIVClientStructs.StdContainerTester/FFXIVClientStructs.StdContainerTester.csproj
+@@ -1,8 +1,8 @@
+-﻿<Project Sdk="Microsoft.NET.Sdk">
++<Project Sdk="Microsoft.NET.Sdk">
+ 
+   <PropertyGroup>
+     <OutputType>Exe</OutputType>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+diff --git a/FFXIVClientStructs/FFXIV/Client/UI/UIInputData.cs b/FFXIVClientStructs/FFXIV/Client/UI/UIInputData.cs
+index ee3a833b3..8de3393a9 100644
+--- a/FFXIVClientStructs/FFXIV/Client/UI/UIInputData.cs
++++ b/FFXIVClientStructs/FFXIV/Client/UI/UIInputData.cs
+@@ -1,3 +1,4 @@
++using ModifierFlag = FFXIVClientStructs.FFXIV.Client.System.Input.KeyModifierFlag;
+ // Suppress Inconsistent Naming due to VirtualKeyCode Names
+ // ReSharper disable InconsistentNaming
+ using FFXIVClientStructs.FFXIV.Client.System.Input;
+diff --git a/FFXIVClientStructs/FFXIV/Component/GUI/AtkComponentInputBase.cs b/FFXIVClientStructs/FFXIV/Component/GUI/AtkComponentInputBase.cs
+index 5848a5aa3..ff403ef6e 100644
+--- a/FFXIVClientStructs/FFXIV/Component/GUI/AtkComponentInputBase.cs
++++ b/FFXIVClientStructs/FFXIV/Component/GUI/AtkComponentInputBase.cs
+@@ -16,7 +16,7 @@ public unsafe partial struct AtkComponentInputBase {
+     [FieldOffset(0xC8)] public AtkTextNode* AtkTextNode;
+     [FieldOffset(0xD0)] public AtkResNode* CursorContainer;
+     [FieldOffset(0xE0)] public Utf8String EvaluatedString;
+-    [FieldOffset(0xE0), Obsolete("Renamed to EvaluatedString")] public Utf8String UnkText1;
++    [FieldOffset(0xE0), Obsolete("Renamed to EvaluatedString")] public Utf8String EvaluatedString;
+     [FieldOffset(0xD8)] public AtkCollisionNode* CollisionNode;
+     /// <remarks> Can contain unevaluated fixed macros. </remarks>
+     [FieldOffset(0x148)] public Utf8String RawString;
+diff --git a/FFXIVClientStructs/FFXIV/Component/GUI/AtkEventData.cs b/FFXIVClientStructs/FFXIV/Component/GUI/AtkEventData.cs
+index 4358e2c0a..2e836925e 100644
+--- a/FFXIVClientStructs/FFXIV/Component/GUI/AtkEventData.cs
++++ b/FFXIVClientStructs/FFXIV/Component/GUI/AtkEventData.cs
+@@ -1,3 +1,4 @@
++using ModifierFlag = FFXIVClientStructs.FFXIV.Client.System.Input.KeyModifierFlag;
+ namespace FFXIVClientStructs.FFXIV.Component.GUI;
+ 
+ [CExporterStructUnion]
+diff --git a/FFXIVClientStructs/FFXIVClientStructs.csproj b/FFXIVClientStructs/FFXIVClientStructs.csproj
+index d39d2ec00..22dba90ca 100644
+--- a/FFXIVClientStructs/FFXIVClientStructs.csproj
++++ b/FFXIVClientStructs/FFXIVClientStructs.csproj
+@@ -1,6 +1,6 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <LangVersion>preview</LangVersion>
+     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+     <ImplicitUsings>enable</ImplicitUsings>
+diff --git a/InteropGenerator.Runtime/InteropGenerator.Runtime.csproj b/InteropGenerator.Runtime/InteropGenerator.Runtime.csproj
+index 97b1ba037..067ac2ea4 100644
+--- a/InteropGenerator.Runtime/InteropGenerator.Runtime.csproj
++++ b/InteropGenerator.Runtime/InteropGenerator.Runtime.csproj
+@@ -1,6 +1,6 @@
+-﻿<Project Sdk="Microsoft.NET.Sdk">
++<Project Sdk="Microsoft.NET.Sdk">
+   <PropertyGroup>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <LangVersion>latest</LangVersion>
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+diff --git a/InteropGenerator.Tests/InteropGenerator.Tests.csproj b/InteropGenerator.Tests/InteropGenerator.Tests.csproj
+index 851a07001..49a4cae91 100644
+--- a/InteropGenerator.Tests/InteropGenerator.Tests.csproj
++++ b/InteropGenerator.Tests/InteropGenerator.Tests.csproj
+@@ -1,7 +1,7 @@
+ <Project Sdk="Microsoft.NET.Sdk">
+ 
+   <PropertyGroup>
+-    <TargetFramework>net9.0</TargetFramework>
++    <TargetFramework>net10.0</TargetFramework>
+     <ImplicitUsings>enable</ImplicitUsings>
+     <Nullable>enable</Nullable>
+ 
+diff --git a/global.json b/global.json
+index f4fd38572..f14bca8bb 100644
+--- a/global.json
++++ b/global.json
+@@ -1,7 +1,7 @@
+ {
+   "sdk": {
+-    "version": "9.0.0",
++    "version": "10.0.302",
+     "rollForward": "latestMajor",
+     "allowPrerelease": true
+   }
+-}
+\ No newline at end of file
++}
